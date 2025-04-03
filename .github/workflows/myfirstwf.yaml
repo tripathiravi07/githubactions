@@ -16,7 +16,7 @@ jobs:
         minikube image load ecs-api:latest
     - name: Update Kubernetes Deployment YAML
       run: |
-        sed -i 's|IMAGE_PLACEHOLDER|ecs-api:latest|g' k8s/deployment.yaml
+        sed -i 's|IMAGE_PLACEHOLDER|ecs-api:latest|g' api.yaml
     - name: Apply Kubernetes Manifest
       run: |
         kubectl apply -f api.yaml
