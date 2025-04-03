@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: IMAGE_PLACEHOLDER
+          image: ravitripathi/api:v1
           ports:
             - name: http-metrics  # Named port (important for ServiceMonitor)
               containerPort: 8080
