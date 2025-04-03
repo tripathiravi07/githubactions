@@ -9,6 +9,7 @@ jobs:
     steps:
     - name: Build Docker Image
       run: |
+        ls -ltrh
         docker build -t ecs-api:latest .
         minikube image load ecs-api:latest
     - name: Update Kubernetes Deployment YAML
