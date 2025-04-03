@@ -1,69 +1,69 @@
-# GitHub Actions Sample Project (Python)
+# GitHub Actions Deployment with Kubernetes
 
-This repository demonstrates how to use GitHub Actions for CI/CD automation in a Python project.
+This repository demonstrates how to set up a **GitHub Actions** workflow to build a Docker image, push it to **Docker Hub**, and deploy it to a **Kubernetes cluster**.
 
-## Features
-- Automated build and test workflows
-- Continuous Integration (CI) pipeline
-- Deployment automation
-- Scheduled and manual workflow runs
+## Prerequisites
 
-## Getting Started
+Before you begin, ensure you have the following:
 
-### Prerequisites
-- A GitHub repository
-- Basic understanding of YAML
-- GitHub Actions enabled for your repository
-- Python installed (recommended version: 3.8+)
+- **Docker Hub Account**: To store and retrieve your Docker images.
+- **Kubernetes Cluster**: A running Kubernetes cluster accessible from the GitHub Actions runner.
+- **GitHub Secrets**: The following secrets should be configured in your repository:
+  - `DOCKERHUB_USERNAME`: Your Docker Hub username.
+  - `DOCKERHUB_PASSWORD`: Your Docker Hub password or access token.
+  - `KUBECONFIG_DATA`: Base64-encoded Kubeconfig file for accessing your Kubernetes cluster.
 
-### Setup
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/github-actions-sample.git
-   cd github-actions-sample
-   ```
-2. Navigate to `.github/workflows/` to view the workflow YAML files.
-3. Modify the workflows as per your project requirements.
-
-## Example Workflow
-Below is an example of a simple CI workflow for a Python project:
+## Repository Structure
 
 ```
-name: Python CI Pipeline
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.8'
-      
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      
-      - name: Run Tests
-        run: src/pytest
+.
+├── .github
+│   └── workflows
+│       └── myfirstwf.yaml # GitHub Actions workflow
+├── api.yaml
+├── ecs-api.py
+├── requirements.txt     # Python dependencies
+├── Dockerfile           # Dockerfile for building the application image
+└── README.md            # Project documentation
 ```
 
-## Running Workflows
-- Workflows automatically trigger on `push` and `pull_request` events.
-- You can manually trigger workflows from the GitHub Actions tab.
+## GitHub Actions Workflow
 
-## Contributing
-Feel free to submit issues and pull requests to enhance this project.
+The [myfirstwf.yaml](.github/workflows/myfirstwf.yaml) workflow automates the following steps:
+
+1. **Checkout Repository**: Retrieves the latest code from the repository.
+2. **Log in to Docker Hub**: Authenticates to Docker Hub using the provided secrets.
+3. **Build and Push Docker Image**: Builds the Docker image from the `Dockerfile` and pushes it to Docker Hub.
+4. **Apply Kubernetes Manifests**: Deploys the updated manifests to the Kubernetes cluster.
+
+## Setting Up the Environment
+
+1. **Configure GitHub Secrets**:
+   - Navigate to your repository's **Settings** > **Secrets and variables** > **Actions**.
+   - Add the following secrets:
+     - `DOCKERHUB_USERNAME`: Your Docker Hub username.
+     - `DOCKERHUB_PASSWORD`: Your Docker Hub password or access token.
+
+2. **Prepare Kubernetes Manifests**:
+   - Ensure the `api.yaml` files are correctly configured for your application.
+
+3. **Trigger the Workflow**:
+   - Push changes to the `main` branch to trigger the GitHub Actions workflow.
+
+## Notes
+
+- Ensure your Kubernetes cluster is accessible from the GitHub Actions runner.
+- The `KUBECONFIG_DATA` secret should contain the base64-encoded content of your Kubeconfig file. You can generate it using:
+
+  ```bash
+  cat $HOME/.kube/config | base64
+  ```
+
+  Then, add the output as the `KUBECONFIG_DATA` secret.
+
+- The `deploy.yml` workflow is set to run on pushes to the `main` branch. Modify the `on` section of the workflow file to suit your needs.
+
+---
+
+This `README.md` provides a comprehensive overview of your project's purpose, structure, and setup instructions. Ensure to replace placeholders with your actual information where necessary.
+
